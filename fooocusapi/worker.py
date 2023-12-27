@@ -665,9 +665,6 @@ def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> Li
                     return yield_result(async_task, cn_img, tasks)
             for task in cn_tasks[flags.cn_ip]:
                 cn_img, cn_stop, cn_weight = task
-                # Ardha
-                user_face = cn_img
-                # Stop
                 cn_img = HWC3(cn_img)
 
                 # https://github.com/tencent-ailab/IP-Adapter/blob/d580c50a291566bbf9fc7ac0f760506607297e6d/README.md?plain=1#L75
@@ -678,6 +675,9 @@ def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> Li
                     return yield_result(async_task, cn_img, tasks)
             for task in cn_tasks[flags.cn_ip_face]:
                 cn_img, cn_stop, cn_weight = task
+                # Ardha
+                user_face = cn_img
+                # Stop
                 cn_img = HWC3(cn_img)
 
                 if not advanced_parameters.skipping_cn_preprocessor:
