@@ -8,6 +8,7 @@ from typing import List
 from fooocusapi.file_utils import save_output_file
 from fooocusapi.parameters import GenerationFinishReason, ImageGenerationParams, ImageGenerationResult
 from fooocusapi.task_queue import QueueTask, TaskQueue, TaskOutputs
+from inswapper.swapper import *
 
 
 task_queue = TaskQueue(queue_size=3, hisotry_size=6)
@@ -21,6 +22,9 @@ def process_top():
 @torch.no_grad()
 @torch.inference_mode()
 def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> List[ImageGenerationResult]:
+    # Ardha
+    user_face = None
+    # Stop
     try:
         import modules.default_pipeline as pipeline
     except Exception as e:
@@ -661,6 +665,9 @@ def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> Li
                     return yield_result(async_task, cn_img, tasks)
             for task in cn_tasks[flags.cn_ip]:
                 cn_img, cn_stop, cn_weight = task
+                # Ardha
+                user_face = cn_img
+                # Stop
                 cn_img = HWC3(cn_img)
 
                 # https://github.com/tencent-ailab/IP-Adapter/blob/d580c50a291566bbf9fc7ac0f760506607297e6d/README.md?plain=1#L75
@@ -804,9 +811,32 @@ def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> Li
                     d.append(('Version', 'v' + fooocus_version.version))
                     log(x, d)
                 
-                # Fooocus async_worker.py code end
+                # Added By Ardha
+                face_swap_results = []
+                if user_face is not None:
+                    for img in imgs:
+
+                        print(f"type img: {type(img)}")
+                        print(f"type user_face: {type(user_face)}")
+
+                        face_swap_result = face_swap(
+                            source_imgs=[user_face],
+                            target_img=img,
+                            source_indexes="-1",
+                            target_indexes="-1",
+                            face_restore=True,
+                            background_enhance=True,
+                            face_upsample=True,
+                            upscale=1,
+                            codeformer_fidelity=0.5
+                        )
+                        face_swap_results.append(face_swap_result)
+                    results += face_swap_results
+
+                else:
+                    results += imgs
+                # Stop
                 
-                results += imgs
             except model_management.InterruptProcessingException as e:
                 print("User stopped")
                 results.append(ImageGenerationResult(
