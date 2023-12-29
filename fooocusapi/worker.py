@@ -816,9 +816,6 @@ def process_generate(async_task: QueueTask, params: ImageGenerationParams) -> Li
                 if user_face is not None:
                     for img in imgs:
 
-                        print(f"type img: {type(img)}")
-                        print(f"type user_face: {type(user_face)}")
-
                         face_swap_result = face_swap(
                             source_imgs=[user_face],
                             target_img=img,

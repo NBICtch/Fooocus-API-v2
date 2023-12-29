@@ -43,7 +43,7 @@ build:
     - "yapf==0.40.2"
     - "lpips==0.1.4"
     - "insightface>=0.7.3"
-    - "onnxruntime-gpu"
+    - "onnxruntime"
 
   # commands run after the environment is setup
   # run:

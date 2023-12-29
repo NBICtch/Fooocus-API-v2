@@ -6,7 +6,7 @@ import sys
 from typing import List
 from cog import BasePredictor, Input, Path
 
-from fooocusapi.parameters import GenerationFinishReason, ImageGenerationParams, available_aspect_ratios, uov_methods, outpaint_expansions, defualt_styles, default_base_model_name, default_refiner_model_name, default_loras, default_refiner_switch, default_cfg_scale, default_prompt_negative
+from fooocusapi.parameters import GenerationFinishReason, ImageGenerationParams, available_aspect_ratios, uov_methods, outpaint_expansions, defualt_styles, default_base_model_name, default_refiner_model_name, default_loras, default_refiner_switch, default_cfg_scale, default_prompt_negative, default_body_type
 from fooocusapi.task_queue import TaskType
 from fooocusapi.worker import process_generate, task_queue
 from fooocusapi.file_utils import output_dir
@@ -22,6 +22,12 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
+        base_model_name: str = Input(default='OpenDalle.safetensors', 
+                                description="The model for image generation", choices=default_base_model_name),
+        age: int = Input(default=17, 
+                                description="The age of user", ge=1, le=100),
+        body_type: str = Input(default='normal', 
+                                description="The body type of user", choices=default_body_type),
         prompt: str = Input( default='', description="Prompt for image generation"),
         negative_prompt: str = Input( default=default_prompt_negative, 
                                 description="Negtive prompt for image generation"),
@@ -93,7 +99,12 @@ class Predictor(BasePredictor):
         import modules.flags as flags
         from modules.sdxl_styles import legal_style_names
 
-        base_model_name = default_base_model_name
+        if body_type == 'normal':
+            prompt = f"{age} years old, {prompt}"
+        else:
+            prompt = f"{age} years old, {body_type} body, {prompt}"
+
+        # base_model_name = default_base_model_name
         refiner_model_name = default_refiner_model_name
         loras = default_loras
 
