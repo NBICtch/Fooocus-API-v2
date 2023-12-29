@@ -193,10 +193,10 @@ def is_installed(package):
 
 def download_models():
     vae_approx_filenames = [
-        ('xlvaeapp.pth', 'https://huggingface.co/lllyasviel/misc/resolve/main/xlvaeapp.pth'),
-        ('vaeapp_sd15.pth', 'https://huggingface.co/lllyasviel/misc/resolve/main/vaeapp_sd15.pt'),
+        ('xlvaeapp.pth', 'https://fooocus-bucket.s3.amazonaws.com/fav_models/vae/xlvaeapp.pth'),
+        ('vaeapp_sd15.pth', 'https://fooocus-bucket.s3.amazonaws.com/fav_models/vae/vaeapp_sd15.pt'),
         ('xl-to-v1_interposer-v3.1.safetensors',
-        'https://huggingface.co/lllyasviel/misc/resolve/main/xl-to-v1_interposer-v3.1.safetensors')
+        'https://fooocus-bucket.s3.amazonaws.com/fav_models/vae/xl-to-v1_interposer-v3.1.safetensors')
     ]
 
     from modules.model_loader import load_file_from_url
@@ -213,7 +213,7 @@ def download_models():
         load_file_from_url(url=url, model_dir=vae_approx_path, file_name=file_name)
 
     load_file_from_url(
-        url='https://huggingface.co/lllyasviel/misc/resolve/main/fooocus_expansion.bin',
+        url='https://fooocus-bucket.s3.amazonaws.com/fav_models/expansion/fooocus_expansion.bin',
         model_dir=fooocus_expansion_path,
         file_name='pytorch_model.bin'
     )
