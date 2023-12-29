@@ -323,6 +323,7 @@ def pre_setup(skip_sync_repo: bool=False, disable_private_log: bool=False, skip_
         always_gpu = False
         all_in_fp16 = False
         gpu_device_id = None
+        webhook_url = None
 
     print("[Pre Setup] Prepare environments")
 
